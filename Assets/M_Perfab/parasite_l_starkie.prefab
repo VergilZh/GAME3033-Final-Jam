@@ -1826,7 +1826,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   speed: 4
-  EnemyHealth: 100
+  enemyAttack: 10
+  EnemyHealth: 50
 --- !u!1 &7916832740772701001
 GameObject:
   m_ObjectHideFlags: 0

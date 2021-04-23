@@ -6,6 +6,8 @@ public class S_EnemyBehaviour : MonoBehaviour
 {
     public Transform target;
     public float speed;
+    public float enemyAttack;
+    public AudioSource hit;
     public int EnemyHealth = 100;
 
     private Rigidbody rig;
@@ -32,6 +34,7 @@ public class S_EnemyBehaviour : MonoBehaviour
     public void GetDamage(int damage)
     {
         EnemyHealth -= damage;
+        hit.Play();
     }
 
     void EnemyFollowTarget()
@@ -39,5 +42,13 @@ public class S_EnemyBehaviour : MonoBehaviour
         Vector3 position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
         rig.MovePosition(position);
         transform.LookAt(target);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            FindObjectOfType<S_PlayerMovement>().playerHealth -= enemyAttack;
+        }
     }
 }
