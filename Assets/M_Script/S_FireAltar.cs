@@ -2,31 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class S_WaterAltar : MonoBehaviour
+public class S_FireAltar : MonoBehaviour
 {
-    public GameObject waterIcon;
-    public ParticleSystem waterParticle;
+    public GameObject fireIcon;
+    public ParticleSystem fireParticle;
+    public GameObject fireEffect;
     public AudioSource activeSound;
     // Start is called before the first frame update
     void Start()
     {
-        waterParticle.Stop();
+        fireParticle.Stop();
+        fireEffect.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")
         {
-            waterParticle.Play();
-            waterIcon.SetActive(true);
-            FindObjectOfType<S_PlayerMovement>().waterAcitve = true;
+            fireParticle.Play();
+            fireEffect.SetActive(true);
+            fireIcon.SetActive(true);
             activeSound.Play();
+            FindObjectOfType<S_PlayerMovement>().fireAcitve = true;
             FindObjectOfType<S_PlayerMovement>().CheckGameWin();
         }
     }

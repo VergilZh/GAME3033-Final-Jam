@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class S_PlayerMovement : MonoBehaviour
 {
     public float speed;
+    public float maxSpeed;
     public float playerHealth = 100;
     public S_HealthSilder healthBar;
+    public AudioSource attackSound;
 
     [Header("Magic Ball")]
     public GameObject magicBall;
@@ -17,10 +20,19 @@ public class S_PlayerMovement : MonoBehaviour
     public GameObject fireUI;
     public GameObject waterUI;
     public GameObject desertUI;
+    public GameObject pauseUI;
+
+    [Header("Altar Active")]
+    public bool windAcitve;
+    public bool fireAcitve;
+    public bool waterAcitve;
+    public bool earthAcitve;
+
 
     private int floorMask;
     private float camRayLength = 100f;
 
+    private static bool gameIsPaused = false;
     private float attackRate = 2.1f;
     private float nextAttackTime = 0f;
     private Vector3 movement;
@@ -41,6 +53,14 @@ public class S_PlayerMovement : MonoBehaviour
         healthBar.SetHealth(playerHealth);
         KeyBoardMove();
         Turning();
+        CheckFloor();
+
+        if (playerHealth <= 0)
+        {
+            SceneManager.LoadScene("GameLost");
+        }
+
+
     }
 
 
@@ -71,11 +91,26 @@ public class S_PlayerMovement : MonoBehaviour
             {
                 Instantiate(magicBall, magicBallSpawn.position, magicBallSpawn.rotation);
                 playerAnim.SetBool("isAttack", true);
+                attackSound.Play();
                 nextAttackTime = Time.time + attackRate;
             }
             else
             {
                 playerAnim.SetBool("isAttack", false);
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            if (gameIsPaused)
+            {
+                Resume();
+            }
+            else
+            {
+                pauseUI.SetActive(true);
+                Time.timeScale = 0f;
+                gameIsPaused = true;
             }
         }
     }
@@ -93,11 +128,14 @@ public class S_PlayerMovement : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void CheckFloor()
     {
-        if (collision.gameObject.tag == "GreenLand")
+        RaycastHit floor;
+        Physics.Raycast(transform.position, Vector3.down, out floor);
+        //print(floor.transform.name);
+
+        if (floor.transform.name == "GreenFloor")
         {
-            print("green");
             woodUI.SetActive(true);
         }
         else
@@ -105,32 +143,27 @@ public class S_PlayerMovement : MonoBehaviour
             woodUI.SetActive(false);
         }
 
-        if (collision.gameObject.tag == "BlueLand")
+        if (floor.transform.name == "BlueFloor")
         {
-            print("blue");
             waterUI.SetActive(true);
             speed = 5;
         }
         else
         {
-            speed = 8;
             waterUI.SetActive(false);
+            speed = maxSpeed;
         }
-        if (collision.gameObject.tag == "YellowLand")
+
+        if (floor.transform.name == "YellowFloor")
         {
-            print("yellow");
             desertUI.SetActive(true);
         }
         else
         {
             desertUI.SetActive(false);
         }
-        
-    }
 
-    private void OnCollisionStay(Collision collision)
-    {
-        if (collision.gameObject.tag == "RedLand")
+        if (floor.transform.name == "RedFloor")
         {
             playerHealth -= Random.Range(0, 2) * Time.deltaTime;
             fireUI.SetActive(true);
@@ -140,4 +173,69 @@ public class S_PlayerMovement : MonoBehaviour
             fireUI.SetActive(false);
         }
     }
+
+    public void Resume()
+    {
+        pauseUI.SetActive(false);
+        Time.timeScale = 1f;
+        gameIsPaused = false;
+    }
+
+    public void CheckGameWin()
+    {
+        if (windAcitve == true && fireAcitve == true && waterAcitve == true && earthAcitve == true)
+        {
+            print("win");
+            SceneManager.LoadScene("GameWin");
+        }
+    }
+
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "GreenLand")
+    //    {
+    //        //print("green");
+    //        woodUI.SetActive(true);
+    //    }
+    //    else
+    //    {
+            
+    //    }
+
+    //    if (collision.gameObject.tag == "BlueLand")
+    //    {
+    //        //print("blue");
+    //        waterUI.SetActive(true);
+    //        speed = 5;
+    //    }
+    //    else
+    //    {
+    //        speed = 8;
+    //        waterUI.SetActive(false);
+    //    }
+        
+    //    if (collision.gameObject.tag == "YellowLand")
+    //    {
+    //        //print("yellow");
+    //        desertUI.SetActive(true);
+    //    }
+    //    else
+    //    {
+    //        desertUI.SetActive(false);
+    //    }
+        
+    //}
+
+    //private void OnCollisionStay(Collision collision)
+    //{
+    //    if (collision.gameObject.tag == "RedLand")
+    //    {
+    //        playerHealth -= Random.Range(0, 2) * Time.deltaTime;
+    //        fireUI.SetActive(true);
+    //    }
+    //    else
+    //    {
+    //        fireUI.SetActive(false);
+    //    }
+    //}
 }
