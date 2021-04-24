@@ -5,6 +5,7 @@ using UnityEngine;
 public class S_MagicBallBehaviour : MonoBehaviour
 {
     public float ballSpeed;
+    public int ballAttack;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,7 +22,7 @@ public class S_MagicBallBehaviour : MonoBehaviour
     {
         if (other.tag == "Enemy")
         {
-            other.GetComponent<S_EnemyBehaviour>().GetDamage(10);
+            other.GetComponent<S_EnemyBehaviour>().GetDamage(ballAttack);
             Destroy(gameObject);
         }
     }

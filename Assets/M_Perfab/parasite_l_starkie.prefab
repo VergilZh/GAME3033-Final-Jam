@@ -1825,8 +1825,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 4
+  speed: 3
   enemyAttack: 10
+  hit: {fileID: 0}
   EnemyHealth: 50
 --- !u!1 &7916832740772701001
 GameObject:

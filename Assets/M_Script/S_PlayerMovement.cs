@@ -146,7 +146,7 @@ public class S_PlayerMovement : MonoBehaviour
         if (floor.transform.name == "BlueFloor")
         {
             waterUI.SetActive(true);
-            speed = 5;
+            speed = 3;
         }
         else
         {
